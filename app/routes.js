@@ -1,3 +1,4 @@
+// route.js spits out a function
 module.exports = function(app, passport, db) {
 
 // normal routes ===============================================================
@@ -8,6 +9,9 @@ module.exports = function(app, passport, db) {
     });
 
     // PROFILE SECTION =========================
+    // isLoggedIn method/function at bottom of page
+    //checks if LOGGED in
+    //therefore, res.redirect("/") ... to main page
     app.get('/profile', isLoggedIn, function(req, res) {
         db.collection('messages').find().toArray((err, result) => {
           if (err) return console.log(err)
@@ -34,7 +38,7 @@ module.exports = function(app, passport, db) {
       })
     })
 
-    app.put('/messages', (req, res) => {
+    app.put('/thumbUp', (req, res) => {
       db.collection('messages')
       .findOneAndUpdate({name: req.body.name, msg: req.body.msg}, {
         $set: {
@@ -49,6 +53,25 @@ module.exports = function(app, passport, db) {
       })
     })
 
+
+//THUMBS DOWN ADDED
+    app.put('/thumbsDown', (req, res) => {
+      db.collection('messages')
+      .findOneAndUpdate({name: req.body.name, msg: req.body.msg}, {
+        $set: {
+          thumbUp:req.body.thumbUp - 1
+        }
+      }, {
+        sort: {_id: -1},
+        upsert: true
+      }, (err, result) => {
+        if (err) return res.send(err)
+        res.send(result)
+      })
+    })
+
+
+
     app.delete('/messages', (req, res) => {
       db.collection('messages').findOneAndDelete({name: req.body.name, msg: req.body.msg}, (err, result) => {
         if (err) return res.send(500, err)
@@ -56,6 +79,8 @@ module.exports = function(app, passport, db) {
       })
     })
 
+
+//BELOW IS ALL COPIED FROM PASSPORT
 // =============================================================================
 // AUTHENTICATE (FIRST LOGIN) ==================================================
 // =============================================================================
