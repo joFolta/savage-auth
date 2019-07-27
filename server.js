@@ -4,14 +4,6 @@
 
 // ======================================================================
 
-
-
-
-
-
-
-
-
 // x1 database
 // x2 collections
 // one collection for USERS (username, passwords)
